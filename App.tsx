@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './src/services/supabase';
 import AuthScreen from './src/screens/AuthScreen';
-import DashboardScreen from './src/screens/DashboardScreen';
+import MainLayout from './src/screens/MainLayout'; // Alinhado para carregar o Layout Principal
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -32,7 +32,7 @@ export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <DashboardScreen userEmail={session.user.email || ''} />
+      <MainLayout userEmail={session.user.email || ''} />
     </>
   );
 }

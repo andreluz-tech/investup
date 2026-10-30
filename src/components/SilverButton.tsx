@@ -1,70 +1,78 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  ViewStyle,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 interface SilverButtonProps {
   title: string;
   onPress?: () => void;
-  style?: ViewStyle;
+  variant?: 'primary' | 'secondary';
 }
 
-export default function SilverButton({
-  title,
-  onPress,
-  style,
-}: SilverButtonProps) {
+export function SilverButton({ title, onPress, variant = 'primary' }: SilverButtonProps) {
+  const isPrimary = variant === 'primary';
+
   return (
     <TouchableOpacity
-      activeOpacity={0.85}
+      activeOpacity={0.8}
       onPress={onPress}
-      style={[styles.buttonContainer, style]}
+      style={styles.buttonWrapper}
     >
+      {/* Borda em Gradiente Prateado/Platina */}
       <LinearGradient
-        colors={['#475569', '#94A3B8', '#FFFFFF', '#94A3B8', '#475569']}
-        locations={[0.0, 0.25, 0.5, 0.75, 1.0]}
+        colors={
+          isPrimary
+            ? ['#E2E8F0', '#94A3B8', '#475569', '#CBD5E1'] // Gradiente Prata Metálico com Brilho
+            : ['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.15)']
+        }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.gradientPrata}
+        style={styles.gradientBorder}
       >
-        <Text style={styles.textoPrata}>{title}</Text>
+        {/* Preenchimento Interno Fumê */}
+        <View style={styles.innerContainer}>
+          <Text
+            style={[
+              styles.buttonText,
+              isPrimary ? styles.primaryText : styles.secondaryText,
+            ]}
+          >
+            {title}
+          </Text>
+        </View>
       </LinearGradient>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  buttonContainer: {
+  buttonWrapper: {
     flex: 1,
     height: 48,
-    borderRadius: 50,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
+    borderRadius: 16,
   },
-  gradientPrata: {
+  gradientBorder: {
     flex: 1,
-    borderRadius: 50,
+    borderRadius: 16,
+    padding: 1.2, // Espessura da borda metálica
+  },
+  innerContainer: {
+    flex: 1,
+    borderRadius: 15,
+    backgroundColor: 'rgba(17, 22, 34, 0.85)', // Fundo fumê translúcido
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
   },
-  textoPrata: {
-    color: '#0F172A',
+  buttonText: {
     fontWeight: '800',
     fontSize: 13,
     letterSpacing: -0.2,
     textAlign: 'center',
-    textShadowColor: 'rgba(255, 255, 255, 0.7)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 1,
+  },
+  primaryText: {
+    color: '#F1F5F9', // Branco prateado/platina
+  },
+  secondaryText: {
+    color: '#94A3B8', // Cinza prateado suave
   },
 });

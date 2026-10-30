@@ -6,13 +6,13 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../services/supabase';
 import GradientText from '../components/GradientText';
+import { AuthButton } from '../components/AuthButton';
 
 export default function AuthScreen() {
   const [email, setEmail] = useState('');
@@ -37,22 +37,16 @@ export default function AuthScreen() {
     setLoading(true);
 
     if (isSignUp) {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+      const { error } = await supabase.auth.signUp({ email, password });
 
       if (error) {
         notify('Erro no Cadastro', error.message);
       } else {
-        notify('Sucesso!', 'Conta criada com sucesso. Tente fazer o login.');
+        notify('Sucesso!', 'Conta criada com sucesso. Faça o login.');
         setIsSignUp(false);
       }
     } else {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
         notify('Erro ao Entrar', error.message);
@@ -67,12 +61,15 @@ export default function AuthScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
+      {/* Moldura Externa com Gradiente Metálico (Mesmo tom do PortfolioCard) */}
       <LinearGradient
-        colors={['#BF953F', '#FCF6BA', '#B38728', '#FBF5B7', '#AA771C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        colors={['#FFDCB8', '#D67D52', '#7A2C08', '#2D0D02']}
+        locations={[0.0, 0.3, 0.7, 1.0]}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 0.9, y: 1 }}
         style={styles.cardGradient}
       >
+        {/* Corpo Interno com Fundo Fumê Translúcido */}
         <View style={styles.cardInner}>
           <GradientText text="InvestUp" style={styles.title} />
           <Text style={styles.subtitle}>
@@ -82,7 +79,7 @@ export default function AuthScreen() {
           <TextInput
             style={styles.input}
             placeholder="Seu e-mail"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#64748B"
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -92,36 +89,23 @@ export default function AuthScreen() {
           <TextInput
             style={styles.input}
             placeholder="Sua senha"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#64748B"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
 
-          <TouchableOpacity
-            style={styles.buttonContainer}
+          {/* Componente Modular do Botão Metálico 3D */}
+          <AuthButton
+            title={isSignUp ? 'Cadastrar' : 'Entrar'}
             onPress={handleAuth}
-            disabled={loading}
-          >
-            <LinearGradient
-              colors={['#BF953F', '#FCF6BA', '#AA771C']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.buttonGradient}
-            >
-              {loading ? (
-                <ActivityIndicator color="#0F172A" />
-              ) : (
-                <Text style={styles.buttonText}>
-                  {isSignUp ? 'Cadastrar' : 'Entrar'}
-                </Text>
-              )}
-            </LinearGradient>
-          </TouchableOpacity>
+            loading={loading}
+          />
 
           <TouchableOpacity
             onPress={() => setIsSignUp(!isSignUp)}
             style={styles.switchButton}
+            activeOpacity={0.7}
           >
             <Text style={styles.switchText}>
               {isSignUp
@@ -138,7 +122,7 @@ export default function AuthScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0F19',
+    backgroundColor: '#070A10', // Fundo geral fumê escuro do app
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -146,13 +130,20 @@ const styles = StyleSheet.create({
   cardGradient: {
     width: '100%',
     maxWidth: 400,
-    borderRadius: 22,
-    padding: 1.5,
+    borderRadius: 24,
+    padding: 2,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.85,
+    shadowRadius: 24,
+    elevation: 20,
   },
   cardInner: {
-    backgroundColor: '#161F30',
-    borderRadius: 20.5,
+    backgroundColor: 'rgba(17, 22, 34, 0.85)', // Fundo fumê translúcido padronizado
+    borderRadius: 22,
     padding: 28,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
   title: {
     fontSize: 36,
@@ -162,42 +153,29 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   subtitle: {
-    fontSize: 15,
-    color: '#CBD5E1',
+    fontSize: 14,
+    color: '#94A3B8',
     textAlign: 'center',
     marginBottom: 28,
+    fontWeight: '500',
   },
   input: {
-    backgroundColor: '#0F172A',
+    backgroundColor: 'rgba(10, 14, 23, 0.9)',
     color: '#F8FAFC',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 16,
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#334155',
-  },
-  buttonContainer: {
-    marginTop: 8,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  buttonGradient: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#0B0F19',
-    fontSize: 16,
-    fontWeight: '800',
+    borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   switchButton: {
     marginTop: 22,
     alignItems: 'center',
   },
   switchText: {
-    color: '#F0A886',
-    fontSize: 14,
+    color: '#E6B02E',
+    fontSize: 13,
     fontWeight: '600',
   },
 });

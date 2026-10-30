@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextStyle, Platform, Text } from 'react-native';
+import { TextStyle, Platform, Text, View } from 'react-native';
 import Svg, { Text as SvgText, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 interface GradientTextProps {
@@ -27,10 +27,11 @@ export default function GradientText({
 
   const fontSize = (style?.fontSize as number) || 32;
   const fontWeight = (style?.fontWeight as string) || '900';
+  const containerHeight = fontSize * 1.3;
 
   return (
-    <View style={{ height: fontSize * 1.3, justifyContent: 'center' }}>
-      <Svg height={fontSize * 1.3} width="180">
+    <View style={{ height: containerHeight, justifyContent: 'center' }}>
+      <Svg height={containerHeight} width="320">
         <Defs>
           <LinearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
             {colors.map((color, index) => (
